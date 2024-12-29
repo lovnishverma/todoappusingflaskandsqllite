@@ -6,6 +6,9 @@ app = Flask(__name__)
 conn = sqlite3.connect('todo.db', check_same_thread=False)
 cursor = conn.cursor()
 
+# Make sure there is a column for timestamp or add it to your schema
+
+# Example: ALTER TABLE tasks ADD COLUMN timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 
 @app.route('/addTask', methods=['GET'])
 def add_task():
@@ -17,26 +20,28 @@ def add_task():
 
 @app.route('/getTasks', methods=['GET'])
 def get_tasks():
-    cursor.execute("SELECT * FROM tasks")
-    row = cursor.fetchone()
+    cursor.execute("SELECT * FROM tasks ORDER BY timestamp DESC")  # Sorting tasks by the latest
+    row = cursor.fetchall()
     return render_template("index.html", tasks=row)
+
 
 @app.route('/move-to-done/<int:id>/<string:task_name>')
 def move_to_done(id, task_name):
-    cursor.execute("INSERT INTO done(task, task_id) VALUES(?,?)", (task_name,id))
+    cursor.execute("INSERT INTO done(task, task_id) VALUES(?,?)", (task_name, id))
     cursor.execute("DELETE FROM tasks WHERE tid = ?", (id,))
     conn.commit()
     return redirect('/')
 
+
 @app.route('/deleteTask/<int:id>')
-def deleteTask(id):
+def delete_task(id):
     cursor.execute("DELETE FROM tasks WHERE tid=?", (id,))
     conn.commit()
     return redirect('/')
 
 
 @app.route('/delete-completed/<int:id>')
-def deleteCompletedTask(id):
+def delete_completed_task(id):
     cursor.execute("DELETE FROM done WHERE did=?", (id,))
     conn.commit()
     return redirect('/')
@@ -46,8 +51,8 @@ def deleteCompletedTask(id):
 def home():
     conn = sqlite3.connect('todo.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM tasks")
-    row = cursor.fetchall() 
+    cursor.execute("SELECT * FROM tasks ORDER BY timestamp DESC")  # Sorting tasks by the latest
+    row = cursor.fetchall()
     cursor.execute("SELECT * FROM done")
     row2 = cursor.fetchall()
     return render_template('index.html', tasks=row, done=row2)
@@ -55,4 +60,3 @@ def home():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
