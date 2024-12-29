@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love-To-Do List</title>
+    <title>Love-To-Do App</title>
 
     <!-- Favicon with a love emoji -->
     <link rel="icon" href="https://cdn.glitch.global/c348b206-ff44-4461-9a6a-82e61bbd0a5f/android-chrome-192x192.png?v=1735433362892">
@@ -91,6 +91,31 @@
             color: #ff3b5f;
         }
 
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            input[type="text"] {
+                width: 70%;
+            }
+
+            button {
+                width: 60%;
+            }
+
+            ul {
+                width: 90%;
+            }
+
+            h1, h2 {
+                font-size: 24px;
+            }
+
+            li {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+
+        /* Footer Styling */
         footer {
             margin-top: 20px;
             padding: 10px;
@@ -115,44 +140,45 @@
     <h2>Tasks</h2>
     <ul>
         {% for task in tasks %}
-            <li id="task-{{ task['tid'] }}">
-                {{ task['task'] }} <!-- Assuming task['task'] is the task name -->
-                <div>
-                    <button class="done-btn" data-task-id="{{ task['tid'] }}" style="background-color: #ff6b81; color: white; border: none; cursor: pointer; font-size: 14px; padding: 5px 10px; border-radius: 5px;">
-                        Done
-                    </button>
-                    <a href="/deleteTask/{{ task['tid'] }}" style="margin-left: 10px;">Delete</a>
-                </div>
-            </li>
+        <li id="task-{{ task['tid'] }}">
+            {{ task['task'] }} <!-- Task description -->
+            <div>
+                <button class="done-btn" data-task-id="{{ task['tid'] }}" style="background-color: #ff6b81; color: white; border: none; cursor: pointer; font-size: 14px; padding: 5px 10px; border-radius: 5px;">
+                    Done
+                </button>
+                <a href="/deleteTask/{{ task['tid'] }}" style="margin-left: 10px;">Delete</a>
+            </div>
+        </li>
         {% endfor %}
     </ul>
 
     <h2>Completed Tasks</h2>
     <ul>
         {% for done_task in done %}
-            <li>
-                {{ done_task['task'] }} <!-- Assuming done_task['task'] is the task name -->
-                <div>
-                    <a href="/delete-completed/{{ done_task['did'] }}">Delete Completed</a>
-                </div>
-            </li>
+        <li id="done-{{ done_task['did'] }}">
+            {{ done_task['task'] }} <!-- Task description -->
+            <div>
+                <a href="/delete-completed/{{ done_task['did'] }}">Delete Completed</a>
+            </div>
+        </li>
         {% endfor %}
     </ul>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2024 Lovnish Verma. All rights reserved.</p>
+        <p>&copy; 2024 <a href ="https://glitch.com/@lovnishverma"> Lovnish Verma 😊.</a> All rights reserved. Made with &#10084;</p>
     </footer>
 
+    <!-- Script for handling "Done" button actions -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Add click event to "Done" buttons
             const doneButtons = document.querySelectorAll('.done-btn');
+
             doneButtons.forEach(button => {
                 button.addEventListener('click', function (e) {
                     e.preventDefault(); // Prevent form submission
 
-                    const taskId = button.getAttribute('data-task-id'); // Get task ID
+                    const taskId = button.getAttribute('data-task-id');
 
                     // Send AJAX POST request
                     fetch(`/move-to-done/${taskId}`, {
@@ -160,7 +186,7 @@
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ task_id: taskId }) // Send task_id in request body
+                        body: JSON.stringify({ task_id: taskId })
                     })
                     .then(response => response.json())
                     .then(data => {
@@ -170,9 +196,6 @@
                         } else {
                             alert(data.message); // Show error message
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
                     });
                 });
             });

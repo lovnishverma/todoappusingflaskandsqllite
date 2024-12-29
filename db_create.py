@@ -1,11 +1,11 @@
 import sqlite3
 
-# Connect to SQLite database
 def create_db():
+    # Connect to SQLite database (it will create the file if it doesn't exist)
     conn = sqlite3.connect('todo.db')
     cursor = conn.cursor()
 
-    # Create tasks table with a timestamp column to sort tasks by their creation time
+    # Create tasks table with a timestamp column
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS tasks (
         tid INTEGER PRIMARY KEY,
@@ -14,7 +14,7 @@ def create_db():
     )
     """)
 
-    # Create done table with a foreign key reference to the tasks table
+    # Create done table with task_id as a foreign key reference to tasks
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS done (
         did INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,10 +27,7 @@ def create_db():
 
     # Commit changes and close the connection
     conn.commit()
-    cursor.close()
     conn.close()
 
-    print("Database and tables created successfully!")
-
-if __name__ == '__main__':
-    create_db()
+# Call the function to create the database and tables
+create_db()
