@@ -4,6 +4,10 @@ This is a simple Todo application built using Python and SQLite. The application
 
 Live Demo: https://lovetodoapp.glitch.me/
 
+Github Repo: https://github.com/lovnishverma/todoappusingflaskandsqllite
+
+User Interface:
+
 ![image](https://github.com/user-attachments/assets/9e445185-3880-424f-90c4-e9b7d472b01d)
 
 
