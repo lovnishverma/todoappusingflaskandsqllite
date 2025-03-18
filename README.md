@@ -12,7 +12,7 @@ User Interface:
 
 
 ## Requirements
-- Python 3.x
+- Python 2.7+
 - Flask
 - SQLite3
 
